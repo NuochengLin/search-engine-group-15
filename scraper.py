@@ -44,9 +44,9 @@ def extract_next_links(url, resp, counter):
         #         pass
         word_count = len(soup.get_text().strip().split())
         if word_count < 250:
-            print(url, "  satisfied with ", word_count)
+            print(url, "  not satisfied with ", word_count)
             pass
-        print(url, " not satisfied with ", word_count)
+        print(url, " satisfied with ", word_count)
 
         counter.process_soup(soup, urlparse(resp.url))  # pass soup content to the counter
         # get urls from the 'href' attribute within <a> tags e.g., <a href='...'>
