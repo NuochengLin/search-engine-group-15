@@ -93,9 +93,9 @@ def is_valid(url):
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml)$", parsed.path.lower()):
             return False
         if urlparse(url).query:
-            if any(i in urlparse(url).query for i in ("limit", "order", "sort", "filter")):
+            if any(i in urlparse(url).query for i in ("limit", "order", "sort", "filter", "&format=txt")):
                 return False
-        if any(i in urlparse(url).path for i in ("stayconnected","personal/personal", "eppstein/pix", "/pdf", "format=txt")):
+        if any(i in urlparse(url).path for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix")):
             return False
         if urlparse(url).netloc == "archive.ics.uci.edu":
             return False
