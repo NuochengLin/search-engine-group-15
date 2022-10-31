@@ -13,7 +13,7 @@ class Counter():
         self.subdomain = FreqDist()  # key: subdomain str, value: number of unique pages
 
         # some helpers
-        self.tokenizer = RegexpTokenizer(r'\w+')
+        self.tokenizer = RegexpTokenizer(r"[\w'.-]+")
         self.stopwords = set(get_stop_words('en'))
 
 
@@ -32,13 +32,13 @@ class Counter():
         # update word frequency dict
         for word in tokens:
             if len(word) > 1:
-                word = word.lower()
+                word = word.strip('.').lower()
                 if word not in self.stopwords:
                     self.fdist[word] += 1
 
         # update subdomain
-        if "ics.uci.edu" in url.netloc and url.netloc != "www.ics.uci.edu":
-            self.subdomain[url.netloc] += 1
+        if  ".ics.uci.edu" in url.hostname and url.hostname != "www.ics.uci.edu":
+            self.subdomain[url.hostname] += 1
 
 
     def get_report(self):
@@ -53,7 +53,7 @@ class Counter():
                   f'{"word" : <20}| frequency', file=f)
             for word, freq in self.fdist.most_common(50):
                 print(f'{word : <20}| {freq}', file=f)
-            print(f'\n', file=f)
+            print(file=f)
 
             print(f'# 4. Subdomains:', file=f)
             for subdomain in sorted(self.subdomain.keys()):
