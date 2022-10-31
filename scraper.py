@@ -90,13 +90,13 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc)$", parsed.path.lower()):
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc|apk|sql)$", parsed.path.lower()):
             return False
         q = urlparse(url).query
         p = urlparse(url).path
         l = urlparse(url).netloc
         if q:
-            if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt")):
+            if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt", "action=login")):
                 return False
         if any(i in p for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix")):
             return False
