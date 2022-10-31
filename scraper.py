@@ -29,7 +29,7 @@ def extract_next_links(url, resp, counter):
             return []
         # ps = soup.find_all('p') + soup.find_all('pre')
         # if not ps:
-        #     pass
+        #     return []
         # max_word = 0
         # if len(ps) < 20 and len(soup.find_all('a')) < 20:
         #     for p in ps:
@@ -41,7 +41,7 @@ def extract_next_links(url, resp, counter):
         #             break
         #     else:
         #         print(url, " not satisfied with ", max_word)
-        #         pass
+        #         return []
         word_count = len(soup.get_text().strip().split())
         if word_count < 250:
             print(url, "  not satisfied with ", word_count)
