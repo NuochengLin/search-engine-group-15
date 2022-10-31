@@ -90,16 +90,21 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml)$", parsed.path.lower()):
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc)$", parsed.path.lower()):
             return False
-        if urlparse(url).query:
-            if any(i in urlparse(url).query for i in ("limit", "order", "sort", "filter", "&format=txt")):
+        q = urlparse(url).query
+        p = urlparse(url).path
+        l = urlparse(url).netloc
+        if q:
+            if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt")):
                 return False
-        if any(i in urlparse(url).path for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix")):
+        if any(i in p for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix")):
             return False
-        if urlparse(url).netloc == "archive.ics.uci.edu":
+        if l == "archive.ics.uci.edu":
             return False
-        if (urlparse(url).netloc == "swiki.ics.uci.edu" or "wiki.ics.uci.edu") and "do" in urlparse(url).query:
+        if l == "flamingo.ics.uci.edu" and "/src" in p:
+            return False
+        if (l == "swiki.ics.uci.edu" or "wiki.ics.uci.edu") and "do" in q:
             return False
 
         #print_url(url, True)
