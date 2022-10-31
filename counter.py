@@ -1,7 +1,7 @@
 import os
+from nltk.corpus import stopwords
 from nltk.probability import FreqDist
 from nltk.tokenize import RegexpTokenizer
-from stop_words import get_stop_words
 
 
 # The counter for calculating the report statistics
@@ -14,7 +14,7 @@ class Counter():
 
         # some helpers
         self.tokenizer = RegexpTokenizer(r"[\w'.-]+")
-        self.stopwords = set(get_stop_words('en'))
+        self.stopwords = set(stopwords.words('english'))
 
 
     def process_soup(self, soup, url):
