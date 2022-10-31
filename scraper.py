@@ -102,15 +102,17 @@ def is_valid(url):
         p = urlparse(url).path
         l = urlparse(url).netloc
         if q:
-            if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt", "action=login")):
+            if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt", "action=login", "share=")):
                 return False
-        if any(i in p for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix", "/videos")):
+        if l == "wics.ics.uci.edu" and ("/events" in p):
             return False
         if l == "archive.ics.uci.edu":
             return False
         if l == "flamingo.ics.uci.edu" and ("/src" in p or "/.svn" in p):
             return False
         if (l == "swiki.ics.uci.edu" or "wiki.ics.uci.edu") and "do" in q:
+            return False
+        if any(i in p for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix", "/videos", "/img_", "/2022-")):
             return False
 
         #print_url(url, True)
