@@ -4,12 +4,12 @@ from urllib.parse import urlparse, urldefrag, urljoin
 
 
 
-def scraper(url, resp):
-    links = extract_next_links(url, resp)
+def scraper(url, resp, counter):
+    links = extract_next_links(url, resp, counter)
     return [link for link in links if is_valid(link)]
 
 
-def extract_next_links(url, resp):
+def extract_next_links(url, resp, counter):
     # Implementation required.
     # url: the URL that was used to get the page
     # resp.url: the actual url of the page
@@ -22,8 +22,10 @@ def extract_next_links(url, resp):
 
     links = []
 
-    if resp.status == 200 and resp.raw_response.content:
-        soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
+    if resp.status == 200 and resp.raw_response:
+        soup = BeautifulSoup(resp.raw_response.content, 'lxml')
+        counter.process_soup(soup, urlparse(resp.url))  # pass soup content to the counter
+
         if not soup:
             pass
         ps = soup.find_all('p') + soup.find_all('pre')
