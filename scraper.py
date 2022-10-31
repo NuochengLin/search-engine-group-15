@@ -84,7 +84,7 @@ def is_valid(url):
             """, re.VERBOSE)
 
         # Check domain
-        if not domains.match(parsed.netloc):
+        if not domains.match(parsed.netloc, re.IGNORECASE):
             return False
 
         # Check file extension 
@@ -95,12 +95,17 @@ def is_valid(url):
             + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
-            + r"|thmx|mso|arff|rtf|jar|csv"
+            + r"|thmx|mso|arff|rtf|jar|csv|db"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc|apk|sql)$", parsed.path.lower()):
             return False
-        q = urlparse(url).query
-        p = urlparse(url).path
-        l = urlparse(url).netloc
+
+        # Check repetitive path
+        if re.search(r'\b(\w+)(/\1){2,}\b', parsed.path):
+            return False
+
+        q = parsed.query
+        p = parsed.path
+        l = parsed.netloc
         if q:
             if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt", "action=login", "share=")):
                 return False
