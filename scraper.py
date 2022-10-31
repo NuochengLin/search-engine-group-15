@@ -27,21 +27,26 @@ def extract_next_links(url, resp, counter):
 
         if not soup:
             pass
-        ps = soup.find_all('p') + soup.find_all('pre')
-        if not ps:
+        # ps = soup.find_all('p') + soup.find_all('pre')
+        # if not ps:
+        #     pass
+        # max_word = 0
+        # if len(ps) < 20 and len(soup.find_all('a')) < 20:
+        #     for p in ps:
+        #         word = len(p.get_text().strip().split())
+        #         if word > max_word:
+        #             max_word = word
+        #         if word > 25:
+        #             print(url, "  satisfied with ", word)
+        #             break
+        #     else:
+        #         print(url, " not satisfied with ", max_word)
+        #         pass
+        word_count = len(soup.get_text().strip().split())
+        if word_count < 250:
+            print(url, "  satisfied with ", word_count)
             pass
-        max_word = 0
-        if len(ps) < 20 and len(soup.find_all('a')) < 20:
-            for p in ps:
-                word = len(p.get_text().strip().split())
-                if word > max_word:
-                    max_word = word
-                if word > 25:
-                    print(url, "  satisfied with ", word)
-                    break
-            else:
-                print(url, " not satisfied with ", max_word)
-                pass
+        print(url, " not satisfied with ", word_count)
 
         counter.process_soup(soup, urlparse(resp.url))  # pass soup content to the counter
         # get urls from the 'href' attribute within <a> tags e.g., <a href='...'>
@@ -98,11 +103,11 @@ def is_valid(url):
         if q:
             if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt", "action=login")):
                 return False
-        if any(i in p for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix")):
+        if any(i in p for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix", "/videos")):
             return False
         if l == "archive.ics.uci.edu":
             return False
-        if l == "flamingo.ics.uci.edu" and "/src" in p:
+        if l == "flamingo.ics.uci.edu" and ("/src" in p or "/.svn" in p):
             return False
         if (l == "swiki.ics.uci.edu" or "wiki.ics.uci.edu") and "do" in q:
             return False
