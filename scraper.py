@@ -50,6 +50,7 @@ def extract_next_links(url, resp, counter):
             print(url, " satisfied with ", word_count)
 
         counter.process_soup(soup, urlparse(resp.url))  # pass soup content to the counter
+        
         # get urls from the 'href' attribute within <a> tags e.g., <a href='...'>
         for a_tag in soup.find_all('a'):
             # get absolute url by joining the two if necessary
@@ -94,7 +95,7 @@ def is_valid(url):
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
             + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-            + r"|epub|dll|cnf|tgz|sha1"
+            + r"|epub|dll|cnf|tgz|sha1|py"
             + r"|thmx|mso|arff|rtf|jar|csv|db"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc|apk|sql)$", parsed.path.lower()):
             return False
@@ -103,9 +104,10 @@ def is_valid(url):
         if re.search(r'\b(\w+)(/\1){2,}\b', parsed.path):
             return False
 
-        q = parsed.query
+        l = parsed.hostname  # hostname == netloc.lower()
         p = parsed.path
-        l = parsed.netloc
+        q = parsed.query
+        
         if q:
             if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt", "action=login", "share=", "version=")):
                 return False
@@ -122,19 +124,10 @@ def is_valid(url):
         if any(i in p for i in ("stayconnected","personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix", "/videos", "/img_")):
             return False
 
-        #print_url(url, True)
 
         return True
 
     except TypeError:
         print("TypeError for ", parsed)
         raise
-
-
-def print_url(url, valid):
-    """For debugging the url."""
-    if valid:
-        print("Valid: ", url)
-    else:
-        print("  Bad: ", url)
 
