@@ -8,8 +8,7 @@ from stop_words import get_stop_words
 class Counter():
     def __init__(self):
         self.unique_page = 0  # number of unique pages
-        # index 0: url, index 1: the number of words
-        self.longest_page = ["", 0]
+        self.longest_page = ["", 0]  # index 0: url, index 1: the number of words
         self.fdist = FreqDist()  # key: word, value: number of occurrence
         self.subdomain = FreqDist()  # key: subdomain str, value: number of unique pages
 
