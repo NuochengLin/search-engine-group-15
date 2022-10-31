@@ -14,6 +14,7 @@ class Worker(Thread):
         self.config = config
         self.frontier = frontier
         self.counter = counter.Counter()  # for calculating page statistics
+        self.i = 0
         # basic check for requests in scraper
         assert {getsource(scraper).find(req) for req in {
             "from requests import", "import requests"}} == {-1}, "Do not use requests from scraper.py"
@@ -37,3 +38,6 @@ class Worker(Thread):
                 self.frontier.add_url(scraped_url)
             self.frontier.mark_url_complete(tbd_url)
             time.sleep(self.config.time_delay)
+            self.i += 1
+            if self.i % 1000 == 0:
+                self.counter.get_report()
