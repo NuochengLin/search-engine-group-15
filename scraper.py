@@ -24,7 +24,6 @@ def extract_next_links(url, resp, counter):
 
     if resp.status == 200 and resp.raw_response:
         soup = BeautifulSoup(resp.raw_response.content, 'lxml')
-        counter.process_soup(soup, urlparse(resp.url))  # pass soup content to the counter
 
         if not soup:
             pass
@@ -32,16 +31,19 @@ def extract_next_links(url, resp, counter):
         if not ps:
             pass
         max_word = 0
-        for p in ps:
-            word = len(p.get_text().strip().split())
-            if word > max_word:
-                max_word = word
-            if word > 20:
-                print(url, "  satisfied with ", word)
-                break
-        else:
-            print(url, " not satisfied with ", max_word)
-            pass
+        if len(ps) < 20 and len(soup.find_all('a')) < 20:
+            for p in ps:
+                word = len(p.get_text().strip().split())
+                if word > max_word:
+                    max_word = word
+                if word > 25:
+                    print(url, "  satisfied with ", word)
+                    break
+            else:
+                print(url, " not satisfied with ", max_word)
+                pass
+
+        counter.process_soup(soup, urlparse(resp.url))  # pass soup content to the counter
         # get urls from the 'href' attribute within <a> tags e.g., <a href='...'>
         for a_tag in soup.find_all('a'):
             # get absolute url by joining the two if necessary
@@ -88,14 +90,14 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
             + r"|thmx|mso|arff|rtf|jar|csv"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war)$", parsed.path.lower()):
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml)$", parsed.path.lower()):
             return False
         if urlparse(url).query:
-            if "limit" or "order" or "sort" or "filter" in urlparse(url).query:
+            if any(i in urlparse(url).query for i in ("limit", "order", "sort", "filter")):
                 return False
-        if urlparse(url).netloc == "archive.ics.uci.edu":
+        if any(i in urlparse(url).path for i in ("stayconnected","personal/personal", "eppstein/pix", "/pdf", "format=txt")):
             return False
-        if "stayconnected" in urlparse(url).path:
+        if urlparse(url).netloc == "archive.ics.uci.edu":
             return False
         if (urlparse(url).netloc == "swiki.ics.uci.edu" or "wiki.ics.uci.edu") and "do" in urlparse(url).query:
             return False
