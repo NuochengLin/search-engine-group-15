@@ -109,3 +109,6 @@ venv.bak/
 *.full.py
 *.shelve
 .idea/
+
+# report
+report.txt
