@@ -43,7 +43,7 @@ def extract_next_links(url, resp, counter):
         #         print(url, " not satisfied with ", max_word)
         #         return []
         word_count = len(soup.get_text().strip().split())
-        if word_count < 250:
+        if word_count < 245:
             print(url, "  not satisfied with ", word_count)
             return []
         else:
