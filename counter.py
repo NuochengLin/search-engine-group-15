@@ -1,7 +1,7 @@
 import os
+from nltk.corpus import stopwords
 from nltk.probability import FreqDist
 from nltk.tokenize import RegexpTokenizer
-from stop_words import get_stop_words
 
 
 # The counter for calculating the report statistics
@@ -14,7 +14,7 @@ class Counter():
 
         # some helpers
         self.tokenizer = RegexpTokenizer(r"[\w'.-]+")
-        self.stopwords = set(get_stop_words('en'))
+        self.stopwords = set(stopwords.words('english'))
 
 
     def process_soup(self, soup, url):
@@ -24,17 +24,18 @@ class Counter():
         # update unique page
         self.unique_page += 1
 
-        # update longest page
-        if len(tokens) > self.longest_page[1]:
-            self.longest_page[0] = url.geturl()
-            self.longest_page[1] = len(tokens)
-
         # update word frequency dict
+        word_count = 0
         for word in tokens:
-            if len(word) > 1:
-                word = word.strip('.').lower()
-                if word not in self.stopwords:
-                    self.fdist[word] += 1
+            word = word.strip('.').lower()   
+            if word not in self.stopwords and word != '':
+                self.fdist[word] += 1
+                word_count += 1
+        
+        # update longest page
+        if word_count > self.longest_page[1]:
+            self.longest_page[0] = url.geturl()
+            self.longest_page[1] = word_count
 
         # update subdomain
         if  ".ics.uci.edu" in url.hostname and url.hostname != "www.ics.uci.edu":
