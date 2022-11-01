@@ -80,8 +80,7 @@ def is_valid(url):
             ics.uci.edu|
             cs.uci.edu|
             informatics.uci.edu|
-            stat.uci.edu|
-            today.uci.edu/department/information_computer_sciences)$
+            stat.uci.edu)$
             """, re.VERBOSE)
 
         # Check domain
