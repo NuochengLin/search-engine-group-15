@@ -44,10 +44,10 @@ def extract_next_links(url, resp, counter):
         #         return []
         word_count = len(soup.get_text().strip().split())
         if word_count < 245:
-            print(url, "  not satisfied with ", word_count)
+            #print(url, "  not satisfied with ", word_count)
             return []
-        else:
-            print(url, " satisfied with ", word_count)
+        # else:
+        #     print(url, " satisfied with ", word_count)
 
         counter.process_soup(soup, urlparse(resp.url))  # pass soup content to the counter
         
@@ -96,7 +96,7 @@ def is_valid(url):
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1|py"
             + r"|thmx|mso|arff|rtf|jar|csv|db"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc|apk|sql)$", parsed.path.lower()):
+            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc?|apk|sql)$", parsed.path.lower()):
             return False
 
         # Check repetitive path
