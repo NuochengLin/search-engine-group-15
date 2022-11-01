@@ -119,7 +119,7 @@ def is_valid(url):
             return False
         if (l == "swiki.ics.uci.edu" or "wiki.ics.uci.edu") and "do" in q:
             return False
-        if any(i in p for i in ("stayconnected", "eppstein/pix", "/pdf", "asterix", "/videos", "/img_")):
+        if any(i in p for i in ("stayconnected", "personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix", "/videos", "/img_")):
             return False
 
         #print_url(url, True)
