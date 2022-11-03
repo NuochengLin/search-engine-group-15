@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urldefrag, urljoin
 
 
-
 def scraper(url, resp, counter):
     links = extract_next_links(url, resp, counter)
     return [link for link in links if is_valid(link)]
@@ -22,45 +21,20 @@ def extract_next_links(url, resp, counter):
 
     links = []
 
-    if resp.status == 200 and resp.raw_response:
+    if resp.status == 200 and resp.raw_response:  # process the page only on 200 success
         soup = BeautifulSoup(resp.raw_response.content, 'lxml')
+        # pass soup content to the counter
+        low_info = counter.process_soup(soup, urlparse(resp.url))
 
-        if not soup:
-            return []
-        # ps = soup.find_all('p') + soup.find_all('pre')
-        # if not ps:
-        #     return []
-        # max_word = 0
-        # if len(ps) < 20 and len(soup.find_all('a')) < 20:
-        #     for p in ps:
-        #         word = len(p.get_text().strip().split())
-        #         if word > max_word:
-        #             max_word = word
-        #         if word > 25:
-        #             print(url, "  satisfied with ", word)
-        #             break
-        #     else:
-        #         print(url, " not satisfied with ", max_word)
-        #         return []
-        word_count = len(soup.get_text().strip().split())
-        if word_count < 245:
-            #print(url, "  not satisfied with ", word_count)
-            return []
-        # else:
-        #     print(url, " satisfied with ", word_count)
+        if low_info:
+            return links
 
-        counter.process_soup(soup, urlparse(resp.url))  # pass soup content to the counter
-        
         # get urls from the 'href' attribute within <a> tags e.g., <a href='...'>
         for a_tag in soup.find_all('a'):
             # get absolute url by joining the two if necessary
             link = urljoin(url, a_tag.get('href'))
-
             # remove the fragment from the url and append to the list
             links.append(urldefrag(link).url)
-
-    else:
-        pass  # todo when the status is not 200
 
     return links
 
@@ -71,10 +45,14 @@ def is_valid(url):
     # There are already some conditions that return False.
     try:
         parsed = urlparse(url)
+        domain = parsed.netloc.lower()
+        path = parsed.path.lower()
+        query = parsed.query.lower()
+
         if parsed.scheme not in set(["http", "https"]):
             return False
 
-
+        # Check for valid domain
         domains = re.compile(r"""
             .*\.(
             ics.uci.edu|
@@ -82,51 +60,53 @@ def is_valid(url):
             informatics.uci.edu|
             stat.uci.edu)$
             """, re.VERBOSE)
-
-        # Check domain
-        if not domains.match(parsed.netloc, re.IGNORECASE):
+        if not domains.match(domain):
             return False
 
-        # Check file extension 
+        # Check domain & traps
+        if domain == "flamingo.ics.uci.edu" and ("/src" in path or "/.svn" in path):
+            return False
+        if domain in ["swiki.ics.uci.edu", "wiki.ics.uci.edu"] and "do" in query:
+            return False
+        if domain in ["archive.ics.uci.edu", "cbcl.ics.uci.edu"] and query != '':
+            return False
+        if domain == "wics.ics.uci.edu" and ("event" in path):
+            return False
+
+        # Check path
+        if any(i in path for i in ["login", "img", "pdf"]):
+            return False
+        # Check repetitive path
+        if re.search(r'\b([/\w]+)(\1){2,}\b', path):
+            return False
+
+        # Check file extension
         if re.match(
-            r".*\.(css|js|bmp|gif|jpe?g|ico"
-            + r"|png|tiff?|mid|mp2|mp3|mp4"
+            r".*\.(css|js|bmp|gif|jpe?g|ico|odc"
+            + r"|png|tiff?|mid|mp2|mp3|mp4|mat|z|cpp|ipynb"
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
             + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-            + r"|epub|dll|cnf|tgz|sha1|py"
-            + r"|thmx|mso|arff|rtf|jar|csv|db"
-            + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc?|apk|sql)$", parsed.path.lower()):
+            + r"|epub|dll|cnf|tgz|sha1|py|bam|m|r"
+            + r"|thmx|mso|arff|rtf|jar|csv|db|txt"
+                + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc?|apk|sql)$", path):
             return False
 
-        # Check repetitive path
-        if re.search(r'\b([/\w]+)(\1){2,}\b', parsed.path):
+        # Check query
+        if re.match(
+            r".*\.(css|js|bmp|gif|jpe?g|ico|odc"
+            + r"|png|tiff?|mid|mp2|mp3|mp4|mat|z|cpp|ipynb"
+            + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
+            + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
+            + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
+            + r"|epub|dll|cnf|tgz|sha1|py|bam|m|r"
+            + r"|thmx|mso|arff|rtf|jar|csv|db|txt"
+                + r"|rm|smil|wmv|swf|wma|zip|rar|gz|odp|mpg|bib|ppsx|war|java|xml|h|cc?|apk|sql)$", query):
             return False
-
-        l = parsed.hostname  # hostname == netloc.lower()
-        p = parsed.path
-        q = parsed.query
-        
-        if q:
-            if any(i in q for i in ("limit", "order", "sort", "filter", "&format=txt", "action=login", "share=", "version=")):
-                return False
-        if l == "wics.ics.uci.edu" and ("/events" in p):
+        if query and any(i in query for i in ["version=", "format=txt", "share=", "login"]):
             return False
-        if l == "archive.ics.uci.edu":
-            return False
-        if l == "flamingo.ics.uci.edu" and ("/src" in p or "/.svn" in p):
-            return False
-        if l == "grape.ics.uci.edu" and ("/wiki" in p):
-            return False
-        if (l == "swiki.ics.uci.edu" or "wiki.ics.uci.edu") and "do" in q:
-            return False
-        if any(i in p for i in ("stayconnected", "personal/personal", "/seminar/Nanda/", "eppstein/pix", "/pdf", "asterix", "/videos", "/img_")):
-            return False
-
 
         return True
 
-    except TypeError:
-        print("TypeError for ", parsed)
-        raise
-
+    except:
+        return False
