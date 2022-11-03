@@ -1,84 +1,92 @@
-# 1. Unique pages: 9018
+# 1. Unique pages: 9399
 
 # 2. The longest page:
-url:http://www.ics.uci.edu/~kay/wordlist.txt
-words count: 385018
+url:https://www.ics.uci.edu/~eppstein/pubs/pubs.ff
+words count: 31590
 
 # 3. Top 50 most common words:
 word                | frequency
-will                | 57333
-project             | 44408
-research            | 38625
-years               | 38288
-students            | 37778
-ago                 | 34968
-added               | 34069
-can                 | 31688
-course              | 29119
-information         | 27987
-kb                  | 26988
-computer            | 25749
-uci                 | 24996
-student             | 24576
-use                 | 24193
-software            | 24186
-data                | 23551
-ics                 | 23393
-policies            | 22625
-projects            | 22197
-chenli              | 20983
-may                 | 19149
-news                | 18528
-file                | 18396
-school              | 17086
-2022                | 16801
-2018                | 16636
-bren                | 16424
-science             | 16206
-2017                | 16062
-graduate            | 16000
-time                | 15947
-http                | 15932
-10                  | 15787
-one                 | 15604
-database            | 15477
-using               | 15400
-also                | 15223
-informatics         | 15127
-new                 | 15052
-events              | 15029
-engineering         | 14999
-2019                | 14625
-work                | 14623
-make                | 14323
-design              | 14320
-contact             | 14258
-undergraduate       | 14018
-2020                | 13919
-academic            | 13895
+research            | 49691
+computer            | 36616
+information         | 29018
+students            | 28261
+uci                 | 27645
+policies            | 27091
+ics                 | 26172
+data                | 26088
+student             | 24930
+school              | 24843
+news                | 24396
+bren                | 23847
+science             | 23251
+software            | 22972
+markellekelly       | 22131
+2022                | 20500
+events              | 19681
+graduate            | 19332
+contact             | 19256
+course              | 18096
+informatics         | 17783
+2018                | 17247
+may                 | 17081
+engineering         | 16965
+undergraduate       | 15883
+faculty             | 15693
+2019                | 15530
+academic            | 15527
+2021                | 15331
+2020                | 15238
+support             | 14919
+2017                | 14800
+design              | 14620
+one                 | 14440
+computing           | 14394
+university          | 14373
+new                 | 13959
+people              | 13821
+2016                | 13768
+donald              | 13652
+department          | 13503
+2015                | 13325
+learning            | 13049
+september           | 12963
+projects            | 12679
+b.s                 | 12563
+irvine              | 12388
+media               | 12273
+courses             | 11877
+october             | 11821
 
 # 4. Subdomains:
-acoi.ics.uci.edu, 52
-asterix.ics.uci.edu, 7
-cbcl.ics.uci.edu, 6
-cdb.ics.uci.edu, 10
-cert.ics.uci.edu, 10
+acoi.ics.uci.edu, 53
+aiclub.ics.uci.edu, 2
+archive.ics.uci.edu, 368
+asterix.ics.uci.edu, 11
+cbcl.ics.uci.edu, 7
+cdb.ics.uci.edu, 1
+cert.ics.uci.edu, 11
 chenli.ics.uci.edu, 8
-circadiomics.ics.uci.edu, 4
+circadiomics.ics.uci.edu, 5
 cml.ics.uci.edu, 104
+code.ics.uci.edu, 11
 computableplant.ics.uci.edu, 9
 cradl.ics.uci.edu, 14
-create.ics.uci.edu, 5
+create.ics.uci.edu, 6
+cyberclub.ics.uci.edu, 2
 cybert.ics.uci.edu, 1
 datalab.ics.uci.edu, 1
 dejavu.ics.uci.edu, 1
-emj.ics.uci.edu, 23
+dgillen.ics.uci.edu, 12
+duttgroup.ics.uci.edu, 56
+dynamo.ics.uci.edu, 4
+emj.ics.uci.edu, 22
+esl.ics.uci.edu, 1
 evoke.ics.uci.edu, 4
-flamingo.ics.uci.edu, 31
+flamingo.ics.uci.edu, 29
 fr.ics.uci.edu, 2
 frost.ics.uci.edu, 1
-futurehealth.ics.uci.edu, 4
-grape.ics.uci.edu, 2326
+futurehealth.ics.uci.edu, 81
+grape.ics.uci.edu, 154
 graphmod.ics.uci.edu, 1
 hai.ics.uci.edu, 5
 hobbes.ics.uci.edu, 7
@@ -87,33 +95,44 @@ iasl.ics.uci.edu, 12
 ieee.ics.uci.edu, 1
 industryshowcase.ics.uci.edu, 12
 informatics.ics.uci.edu, 2
+ipf.ics.uci.edu, 1
 ipubmed.ics.uci.edu, 1
-isg.ics.uci.edu, 98
+isg.ics.uci.edu, 141
+luci.ics.uci.edu, 3
 malek.ics.uci.edu, 1
-mcs.ics.uci.edu, 2
-mhcid.ics.uci.edu, 8
+mcs.ics.uci.edu, 31
+mdogucu.ics.uci.edu, 5
+mds.ics.uci.edu, 14
+mhcid.ics.uci.edu, 9
 mlphysics.ics.uci.edu, 1
 mondego.ics.uci.edu, 3
-motifmap.ics.uci.edu, 2
+motifmap.ics.uci.edu, 1
 mse.ics.uci.edu, 3
-mswe.ics.uci.edu, 5
-ngs.ics.uci.edu, 1085
+mswe.ics.uci.edu, 6
+ngs.ics.uci.edu, 1357
 perennialpolycultures.ics.uci.edu, 1
 plrg.ics.uci.edu, 13
+radicle.ics.uci.edu, 1
 redmiles.ics.uci.edu, 4
 riscit.ics.uci.edu, 3
 scratch.proteomics.ics.uci.edu, 3
-sdcl.ics.uci.edu, 16
+sdcl.ics.uci.edu, 60
 se.ics.uci.edu, 1
 seal.ics.uci.edu, 6
-sli.ics.uci.edu, 57
+sherlock.ics.uci.edu, 4
+sli.ics.uci.edu, 59
 sourcerer.ics.uci.edu, 1
+statconsulting.ics.uci.edu, 4
 studentcouncil.ics.uci.edu, 15
-swiki.ics.uci.edu, 11
+swiki.ics.uci.edu, 12
+tad.ics.uci.edu, 2
 tastier.ics.uci.edu, 1
-transformativeplay.ics.uci.edu, 16
-wearablegames.ics.uci.edu, 9
-wics.ics.uci.edu, 483
+transformativeplay.ics.uci.edu, 20
+unite.ics.uci.edu, 5
+vision.ics.uci.edu, 1
+wearablegames.ics.uci.edu, 8
+wics.ics.uci.edu, 456
 wiki.ics.uci.edu, 12
-www-db.ics.uci.edu, 1
+www-db.ics.uci.edu, 5
 www.informatics.ics.uci.edu, 1
+xtune.ics.uci.edu, 2
