@@ -51,6 +51,9 @@ class Indexer:
                     sub = open(sub_file, "w")
                     json.dump(saved_dict, sub)
                     sub.close()
+    def index(self, tokens, url_signature, url):
+        token_dict = self.tokens_to_dict(tokens, url_signature, url)
+        self.write_index(token_dict)
 
 # import json
 #
