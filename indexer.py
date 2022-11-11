@@ -1,5 +1,6 @@
 import os
 import json
+from bs4 import BeautifulSoup
 from json import JSONDecodeError
 from nltk.stem import PorterStemmer
 from collections import defaultdict, namedtuple
@@ -71,21 +72,25 @@ class Indexer:
         '''Build inverted index to the specified path'''
         for root, _, pages in os.walk(self.file_dir):  # iterate through all the pages in the file directory
             for page in pages:
-                with open(os.path.join(root, page), 'r') as f:
+                with open(os.path.join(root, page), 'rb') as f:
                     data = json.load(f)  # data['url']
-                                         # data['content']
-                                         # data['encoding']
-                    
-                    # todo: make other function calls to build indexes
-                    
+                                        # data['content']
+                                        # data['encoding']
+
+                    soup = BeautifulSoup(data['content'], 'lxml')
+                        
+                                
 
 
 if __name__ == '__main__':
+    import warnings
+    warnings.simplefilter("ignore")
+
     file_dir = "./DEV"  # data source directory
     index_path = "./index"
     indexer = Indexer(file_dir, index_path)
     indexer.build()
-
+    print("DONE")
 
 
 
