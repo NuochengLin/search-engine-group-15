@@ -1,18 +1,25 @@
+import os
 import json
 from json import JSONDecodeError
 from nltk.stem import PorterStemmer
-import os
 from collections import defaultdict, namedtuple
+
+
 class Indexer:
-    def __init__(self, index_path):
+    def __init__(self, file_dir, index_path):
         self.stemmer = PorterStemmer()
+        self.file_dir = file_dir  # data source dir
         self.index_path = index_path
         if not os.path.exists(index_path):
             os.mkdir(index_path)
+
+
     def stemming(self, word):
         word = str.lower(word)
         word = self.stemmer.stem(word)
         return word
+
+
     def tokens_to_dict(self, tokens, url_signature, url):
         Poster = namedtuple("Poster", ("url", "frequency", "location"))
         token_dict = defaultdict(lambda:defaultdict(lambda:defaultdict(lambda:Poster("",0,[]))))
@@ -29,6 +36,8 @@ class Indexer:
         json.dump(token_dict,f)
         f.close()
         return token_dict
+
+
     def write_index(self, token_dictionary):
             for sub_folder in token_dictionary:
                 sub_path = os.path.join(self.index_path, sub_folder)
@@ -51,9 +60,38 @@ class Indexer:
                     sub = open(sub_file, "w")
                     json.dump(saved_dict, sub)
                     sub.close()
+
+
     def index(self, tokens, url_signature, url):
         token_dict = self.tokens_to_dict(tokens, url_signature, url)
         self.write_index(token_dict)
+    
+    
+    def build(self):
+        '''Build inverted index to the specified path'''
+        for root, _, pages in os.walk(self.file_dir):  # iterate through all the pages in the file directory
+            for page in pages:
+                with open(os.path.join(root, page), 'r') as f:
+                    data = json.load(f)  # data['url']
+                                         # data['content']
+                                         # data['encoding']
+                    
+                    # todo: make other function calls to build indexes
+                    
+
+
+if __name__ == '__main__':
+    file_dir = "./DEV"  # data source directory
+    index_path = "./index"
+    indexer = Indexer(file_dir, index_path)
+    indexer.build()
+
+
+
+
+
+
+
 
 # import json
 #

@@ -113,5 +113,6 @@ venv.bak/
 # report
 report.txt
 
-# DEV
+# Indexer
 DEV/
+index/
