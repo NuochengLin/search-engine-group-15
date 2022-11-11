@@ -112,3 +112,6 @@ venv.bak/
 
 # report
 report.txt
+
+# DEV
+DEV/
