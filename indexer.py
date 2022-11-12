@@ -1,14 +1,16 @@
 import os
+import re
 import json
 from bs4 import BeautifulSoup
 from json import JSONDecodeError
-from nltk.stem import PorterStemmer
+from nltk.stem.snowball import SnowballStemmer
 from collections import defaultdict, namedtuple
 
 
 class Indexer:
     def __init__(self, file_dir, index_path):
-        self.stemmer = PorterStemmer()
+        self.stemmer = SnowballStemmer("english")
+        self.pattern = re.compile(r"[a-zA-Z0-9]+")  # used to find tokens
         self.file_dir = file_dir  # data source dir
         self.index_path = index_path
         if not os.path.exists(index_path):
@@ -16,9 +18,7 @@ class Indexer:
 
 
     def stemming(self, word):
-        word = str.lower(word)
-        word = self.stemmer.stem(word)
-        return word
+        return self.stemmer.stem(word)
 
 
     def tokens_to_dict(self, tokens, url_signature, url):
@@ -68,16 +68,30 @@ class Indexer:
         self.write_index(token_dict)
     
     
+    def parse(self, content):
+        '''Yield each token and relative position from the content'''
+        position = 0
+        soup = BeautifulSoup(content, 'lxml')
+
+        for string in soup.stripped_strings:
+            for token in self.pattern.finditer(string):
+                yield self.stemming(token.group()), position
+                position += 1
+    
+    
     def build(self):
         '''Build inverted index to the specified path'''
+        doc_id = 0
+
         for root, _, pages in os.walk(self.file_dir):  # iterate through all the pages in the file directory
             for page in pages:
                 with open(os.path.join(root, page), 'rb') as f:
-                    data = json.load(f)  # data['url']
-                                        # data['content']
-                                        # data['encoding']
+                    data = json.load(f)
+                    for token, position in self.parse(data['content']):
+                        print(token, position)
+                        
 
-                    soup = BeautifulSoup(data['content'], 'lxml')
+                doc_id += 1
                         
                                 
 
