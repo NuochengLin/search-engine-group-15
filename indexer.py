@@ -32,9 +32,8 @@ class Indexer:
             with shelve.open(path, flag='r') as index_file:
                 print(f"Unique words: {len(index_file)}", file=f)
                 print(f"Total size: {os.path.getsize(path) / 1000} kb", file=f)
-        
 
-    
+
     def parse(self, content):
         '''Yield each token and relative position from the content'''
         position = 0
@@ -78,10 +77,8 @@ class Indexer:
                                 self.add_posting(str(doc_id), token, position, index_file)  # add posting to the index file on cache
 
                         doc_id += 1
-                        if doc_id % 1000 == 0:
-                            index_file.sync()  # write back to file and empty the cache
 
-            index_file.sync()
+            index_file.sync()  # write back to file and empty the cache
 
 
 
@@ -94,7 +91,7 @@ if __name__ == '__main__':
     index_path = "./index"  # index folder
     indexer = Indexer(file_dir, index_path)
     indexer.build()
-    #indexer.get_report()
+    indexer.get_report()
 
     print("DONE")
 
