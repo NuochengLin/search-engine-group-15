@@ -19,6 +19,7 @@ class Indexer:
             os.mkdir(index_path)
 
 
+
     def stemming(self, word):
         return self.stemmer.stem(word)
 
@@ -114,9 +115,11 @@ if __name__ == '__main__':
 
     file_dir = "./DEV"  # data source directory
     index_path = "./index"  # index folder
+
     indexer = Indexer(file_dir, index_path)
+    print("DONE")
     indexer.build()
     indexer.get_report()
 
-    print("DONE")
+
 
