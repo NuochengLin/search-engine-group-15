@@ -2,6 +2,7 @@ import shelve
 from nltk.stem.snowball import SnowballStemmer
 import re, math
 import os
+import heapq
 from numpy import array
 query = input("Please enter your query: ")
 pattern = re.compile(r"[a-zA-Z0-9]+")
