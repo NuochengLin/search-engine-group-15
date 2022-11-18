@@ -29,7 +29,7 @@ with shelve.open(os.path.join("./index/record2" , 'inverted_index'), flag='c', w
                 word = stemmer.stem(term.group(0))
                 if d in index[word]:
                     contain += 1
-                    v.append(index[word][d]["freq"] * index[word]["idf"] / length)
+                    v.append(index[word][d]["w"] * index[word]["idf"] / length)
             ratio = contain/l
             if ratio >= 0.75:
                 heapq.heappush(heap, (-ratio,d))
