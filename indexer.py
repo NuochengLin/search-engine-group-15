@@ -1,6 +1,5 @@
-import os
-import re
 import json
+import os, re
 import shelve  # dict-like structure to store index
 from math import log10, sqrt
 from bs4 import BeautifulSoup
@@ -17,7 +16,6 @@ class Indexer:
 
         if not os.path.exists(index_path):
             os.mkdir(index_path)
-
 
 
     def stemming(self, word):
@@ -81,6 +79,7 @@ class Indexer:
                 tf_wt = 1 + log10(fields["freq"])
                 length = sqrt(d[doc_id])
                 fields["w"] = tf_wt / length
+                del fields["freq"]
 
             index[term]["idf"] = log10(N / len(postings))  # idf of term = log(N / df)      
 
@@ -101,7 +100,6 @@ class Indexer:
                             for term, position in self._parse(data['content']):  # get each term from that page
                                 self._add_posting(str(doc_id), term, position, index)  # add posting to the index file on cache
 
-                        print(doc_id)
                         doc_id += 1
 
             self._weight(doc_id + 1, index)  # calculate document weights
@@ -117,9 +115,7 @@ if __name__ == '__main__':
     index_path = "./index"  # index folder
 
     indexer = Indexer(file_dir, index_path)
-    print("DONE")
     indexer.build()
     indexer.get_report()
-
-
+    print("DONE")
 
