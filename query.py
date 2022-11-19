@@ -4,8 +4,8 @@ import re, math
 import os
 import heapq
 
-file_dir = "./index"  # data source directory
-index_path = "./DEV"  # index folder
+index_path = "./index"  # data source directory
+file_dir = "./DEV"  # index folder
 # def intersect(*postings):
 #     if len(postings) <= 1:
 #         return postings[0]
@@ -35,26 +35,25 @@ def ranking_query(query):
     with shelve.open(os.path.join(index_path, 'inverted_index'), flag='c', writeback=True) as index:
         with shelve.open(os.path.join(file_dir, 'id_url'), flag='c') as mapping:
             token_list = set()
-            candidate = set()
             for t in pattern.finditer(query):
                 word = stemmer.stem(t.group(0))
                 if word in index:
                     token_list.add(word)
-                    token_list.union(set(index[word].keys()))
+                else:
+                    return None
             # bool_result = intersect(*sorted(token_list, key= lambda x:len(x)))
             # print(bool_result)
             heap = []
-            for d in candidate:
+            for d in mapping:
                 contain = 0
                 score = 0
                 for term in token_list:
                     if d in index[term]:
                         contain += 1
                         score += index[term][d]["w"] * index[term]["idf"]
-                if contain/len(token_list) >= 0.75:
+                if contain/len(token_list) >= 0.6:
                     heapq.heappush(heap, (-score, d))
             for score, id in heap[:10]:
                 print(id, ": ", mapping[id], "with score: ",-score, end = "\n")
-
 query = input("Please enter your query: ")
 ranking_query(query)
