@@ -39,8 +39,6 @@ def ranking_query(query):
                 word = stemmer.stem(t.group(0))
                 if word in index:
                     token_list.add(word)
-                else:
-                    return None
             # bool_result = intersect(*sorted(token_list, key= lambda x:len(x)))
             # print(bool_result)
             heap = []
