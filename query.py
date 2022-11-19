@@ -45,17 +45,17 @@ def ranking_query(query):
                     token_list.add(word)
             # bool_result = intersect(*sorted(token_list, key= lambda x:len(x)))
             # print(bool_result)
+            print(len(candidate))
             heap = []
             for d in candidate:
                 contain = 0
                 score = 0
                 for term in token_list:
-                    if d in index[term]:
-                        contain += 1
-                        score += index[term][d]["w"] * index[term]["idf"]
-                if contain / len(token_list) >= 0.6:
+                    contain += 1
+                    score += index[term][d]["w"] * index[term]["idf"]
+                if contain/len(token_list) >= 0.75:
                     heapq.heappush(heap, (-score, d))
             for score, id in heap[:10]:
-                print(id, ": ", mapping[id], "with score: ", -score, end="\n")
+                print(id, ": ", mapping[id], "with score: ",-score, end = "\n")
 query = input("Please enter your query: ")
 ranking_query(query)
