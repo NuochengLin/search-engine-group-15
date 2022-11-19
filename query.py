@@ -4,7 +4,8 @@ import re, math
 import os
 import heapq
 
-
+file_dir = "./DEV"  # data source directory
+index_path = "./index"  # index folder
 # def intersect(*postings):
 #     if len(postings) <= 1:
 #         return postings[0]
@@ -31,8 +32,8 @@ import heapq
 def ranking_query(query):
     pattern = re.compile(r"[a-zA-Z0-9]+")
     stemmer = SnowballStemmer("english")
-    with shelve.open(os.path.join("./index/record2" , 'inverted_index'), flag='c', writeback=True) as index:
-        with shelve.open(os.path.join("./index/record2", 'id_url'), flag='c') as mapping:
+    with shelve.open(os.path.join(index_path, 'inverted_index'), flag='c', writeback=True) as index:
+        with shelve.open(os.path.join(file_dir, 'id_url'), flag='c') as mapping:
             token_list = set()
             for t in pattern.finditer(query):
                 word = stemmer.stem(t.group(0))
