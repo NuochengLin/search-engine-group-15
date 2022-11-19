@@ -55,11 +55,12 @@ def ranking_query(query, index, mapping):
 
 
 if __name__ == "__main__":
-    with shelve.open(os.path.join("./index", 'inverted_index'), flag='c', writeback=True) as index:
-        with shelve.open(os.path.join("./index", 'id_url'), flag='c') as mapping:
+    with shelve.open(os.path.join("./index", 'inverted_index'), flag='w', writeback=True) as index:
+        with shelve.open(os.path.join("./index", 'id_url'), flag='w') as mapping:
             pattern = re.compile(r"[a-zA-Z0-9]+")
             stemmer = SnowballStemmer("english")
             query_list = ["cristina lopes", "machine learning", "ACM", "master of software engineering"]
+
             for query in query_list:
                 print("----------------------------------")
                 print("start processing query", query, ": ")
