@@ -6,6 +6,9 @@ import heapq
 import time
 
 
+pattern = re.compile(r"[a-zA-Z0-9]+")
+stemmer = SnowballStemmer("english")
+
 # def intersect(*postings):
 #     if len(postings) <= 1:
 #         return postings[0]
@@ -28,6 +31,12 @@ import time
 #                 a1 = next(a, None)
 #                 b1 = next(b, None)
 #         return intersect(*([result] + list(postings[2:])))
+
+
+def parse_query(query):
+    """extract and return a list of terms from the query"""
+    return [stemmer.stem(t) for t in pattern.findall(query)]
+
 
 def ranking_query(query, index, mapping):
     token_list = set()
@@ -54,23 +63,35 @@ def ranking_query(query, index, mapping):
         print(id, ": ", mapping[id], "with score: ", -score, end="\n")
 
 
+def run():
+    with shelve.open(os.path.join("./index", 'inverted_index'), flag='w', writeback=True) as index:
+        with shelve.open(os.path.join("./index", 'id_url'), flag='w') as mapping:
+            while True:
+                query = input("Enter your query: ")
+                if query == "quit":
+                    break
+
+                s = time.time()
+                ranking_query(parse_query(query), index, mapping)
+                end = time.time()
+
+                print(f"{query} takes {round(end - s, 3)} seconds")
+                print("Type quit to exit")
+                print()
+
+
+
 if __name__ == "__main__":
     with shelve.open(os.path.join("./index", 'inverted_index'), flag='w', writeback=True) as index:
         with shelve.open(os.path.join("./index", 'id_url'), flag='w') as mapping:
-            pattern = re.compile(r"[a-zA-Z0-9]+")
-            stemmer = SnowballStemmer("english")
             query_list = ["cristina lopes", "machine learning", "ACM", "master of software engineering"]
-
             for query in query_list:
                 print("----------------------------------")
                 print("start processing query", query, ": ")
-                token_list = []
 
                 s = time.time()
-                for t in pattern.finditer(query):
-                    token_list.append(stemmer.stem(t.group(0)))
-                ranking_query(token_list, index, mapping)
+                ranking_query(parse_query(query), index, mapping)
                 end = time.time()
 
-                print(query, "takes: ", end - s)
+                print(f"{query} takes {round(end - s, 3)} seconds")
                 print()
