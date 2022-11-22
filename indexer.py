@@ -5,6 +5,7 @@ from math import log10, sqrt
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from nltk.stem.snowball import SnowballStemmer
+from simhash import Simhash, SimhashIndex
 
 
 class Indexer:
@@ -13,6 +14,7 @@ class Indexer:
         self.index_path = index_path
         self.stemmer = SnowballStemmer("english")
         self.pattern = re.compile(r"[a-zA-Z0-9]+")  # used to split terms
+        self.simhash_idx = SimhashIndex([])  # used to query near duplicates
 
         if not os.path.exists(index_path):
             os.mkdir(index_path)
@@ -35,17 +37,15 @@ class Indexer:
 
 
     def _parse(self, content):
-        '''Yield each term and relative position from the content'''
-        position = 0
+        '''Return a list of terms from the content.'''
         soup = BeautifulSoup(content, 'lxml')
 
-        for string in soup.stripped_strings:
-            for term in self.pattern.finditer(string):
-                yield self.stemming(term.group()), position
-                position += 1
+        return [self.stemming(term.group())
+            for string in soup.stripped_strings
+            for term in self.pattern.finditer(string)]
 
 
-    def _add_posting(self, doc_id, term, position, index):
+    def _add_posting(self, doc_id, position, term, index):
         if term in index:  # append to exist entry
             if doc_id in index[term]:
                 index[term][doc_id]["location"].append(position)
@@ -81,7 +81,22 @@ class Indexer:
                 fields["w"] = tf_wt / length
                 del fields["freq"]
 
-            index[term]["idf"] = log10(N / len(postings))  # idf of term = log(N / df)      
+            index[term]["idf"] = log10(N / len(postings))  # idf of term = log(N / df)
+
+
+    def _has_near_duplicate(self, doc_id, terms):
+        """Check if doc has near duplicate.
+
+        Return True if has near duplicate,
+        False otherwise, and add hashed doc.
+        """
+        hashed = Simhash(terms)
+
+        if self.simhash_idx.get_near_dups(hashed):
+            return True
+        else:
+            self.simhash_idx.add(str(doc_id), hashed)
+            return False
 
 
     def build(self):
@@ -95,12 +110,15 @@ class Indexer:
                     for page in pages:
                         with open(os.path.join(root, page), 'rb') as f:
                             data = json.load(f)  # parse page json to data
-                            mapping[str(doc_id)] = data['url']  # mapping doc_id to url
+                            terms = self._parse(data['content'])
 
-                            for term, position in self._parse(data['content']):  # get each term from that page
-                                self._add_posting(str(doc_id), term, position, index)  # add posting to the index file on cache
+                            if not self._has_near_duplicate(doc_id, terms):  # has no near duplicate
+                                mapping[str(doc_id)] = data['url']  # mapping doc_id to url
 
-                        doc_id += 1
+                                for position, term in enumerate(terms):  # get each term from that page
+                                    self._add_posting(str(doc_id), position, term, index)  # add posting to the index file on cache
+
+                                doc_id += 1
 
             self._weight(doc_id + 1, index)  # calculate document weights
             index.sync()  # write back to file and empty the cache
