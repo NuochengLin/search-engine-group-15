@@ -54,7 +54,7 @@ def run():
         with shelve.open(os.path.join("./index", 'id_url'), flag='w') as mapping:
             while True:
                 query = input("Enter your query: ")
-                if query == "quit":
+                if query == "quit" or not query:
                     break
 
                 start = time.time()
@@ -63,7 +63,7 @@ def run():
 
                 print_results(get_page(results, 1, 5), mapping)
                 print(f"Total {len(results):,} results ({round(end - start, 3)} seconds)")
-                print("Type quit to exit")
+                print("Type quit or hit enter to exit")
                 print()
 
 
