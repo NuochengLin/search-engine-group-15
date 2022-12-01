@@ -67,6 +67,26 @@ def run():
                 print()
 
 
+def process_results(results, mapping):
+    """Process results for web api."""
+    items = []
+
+    for i, r in enumerate(results):
+        item = {"rank": i + 1, "url": mapping[r[0]]}
+        items.append(item)
+    
+    return items
+
+
+def search(terms):
+    with shelve.open(os.path.join("./index", 'inverted_index'), flag='w', writeback=True) as index:
+        with shelve.open(os.path.join("./index", 'id_url'), flag='w') as mapping:
+            start = time.time()
+            results = rank(terms, index)
+            end = time.time()
+
+            return process_results(results, mapping), f'({round(end - start, 3)} seconds)'
+
 
 if __name__ == "__main__":
     with shelve.open(os.path.join("./index", 'inverted_index'), flag='w', writeback=True) as index:
@@ -108,27 +128,3 @@ if __name__ == "__main__":
 #                 b1 = next(b, None)
 #         return intersect(*([result] + list(postings[2:])))
 
-
-# def ranking_query(query, index, mapping):
-#     token_list = set()
-#     candidate = set()
-#     for word in query:
-#         if word in index and index[word]["idf"] > 0.2:
-#             for d in index[word]:
-#                 if d != "idf":
-#                     candidate.add(d)
-#             token_list.add(word)
-#     # bool_result = intersect(*sorted(token_list, key= lambda x:len(x)))
-#     # print(bool_result)
-#     heap = []
-#     for d in candidate:
-#         contain = 0
-#         score = 0
-#         for term in token_list:
-#             contain += 1
-#             if d in index[term]:
-#                 score += index[term][d]["w"] * index[term]["idf"]
-#         if contain / len(token_list) >= 0.75:
-#             heapq.heappush(heap, (-score, d))
-#     for score, id in heap[:5]:
-#         print(id, ": ", mapping[id], "with score: ", -score, end="\n")
