@@ -1,11 +1,16 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 from query import parse_query, search
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-@app.route("/")
+@app.route('/')
+def index():
+    return render_template('search_engine.html')
+
+
+@app.route("/api")
 def get_results():
     response = {
       "status": 0,
