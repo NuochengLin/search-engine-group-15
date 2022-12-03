@@ -89,20 +89,7 @@ def search(terms):
 
 
 if __name__ == "__main__":
-    with shelve.open(os.path.join("./index", 'inverted_index'), flag='w', writeback=True) as index:
-        with shelve.open(os.path.join("./index", 'id_url'), flag='w') as mapping:
-            query_list = ["cristina lopes", "machine learning", "ACM", "master of software engineering"]
-            for query in query_list:
-                print("----------------------------------")
-                print("start processing query", query, ": ")
-
-                start = time.time()
-                results = rank(parse_query(query), index)
-                end = time.time()
-
-                print_results(get_page(results, 1, 5), mapping)
-                print(f"Total {len(results):,} results ({round(end - start, 3)} seconds)")
-                print()
+    run()
 
 
 # def intersect(*postings):
