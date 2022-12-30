@@ -1,6 +1,7 @@
 import shelve
 from collections import defaultdict
 from nltk.stem.snowball import SnowballStemmer
+from nltk.corpus import stopwords
 import re
 import os
 import time
@@ -8,11 +9,12 @@ import time
 
 pattern = re.compile(r"[a-zA-Z0-9]+")
 stemmer = SnowballStemmer("english")
+stopwords = {stemmer.stem(t) for t in stopwords.words('english')}
 
 
 def parse_query(query):
     """Extract and return a list of terms from the query."""
-    return [stemmer.stem(t) for t in pattern.findall(query)]
+    return {stemmer.stem(t) for t in pattern.findall(query)}
 
 
 def rank(query, index):
@@ -20,7 +22,7 @@ def rank(query, index):
     scores = defaultdict(int)
 
     for term in query:
-        if term in index and index[term]["idf"] > 0.2:
+        if term not in stopwords and term in index:
             for d, posting in index[term].items():
                 if d != "idf":
                     scores[d] += index[term]["idf"] * posting["w"]
@@ -51,7 +53,7 @@ def print_results(results, mapping):
 
 def run():
     with shelve.open(os.path.join("./index", 'inverted_index'), flag='w', writeback=True) as index:
-        with shelve.open(os.path.join("./index", 'id_url'), flag='w') as mapping:
+        with shelve.open(os.path.join("./index", 'id_url'), flag='r') as mapping:
             while True:
                 query = input("Enter your query: ")
                 if query == "quit" or not query:
@@ -80,7 +82,7 @@ def process_results(results, mapping):
 
 def search(terms):
     with shelve.open(os.path.join("./index", 'inverted_index'), flag='w', writeback=True) as index:
-        with shelve.open(os.path.join("./index", 'id_url'), flag='w') as mapping:
+        with shelve.open(os.path.join("./index", 'id_url'), flag='r') as mapping:
             start = time.time()
             results = rank(terms, index)
             end = time.time()
@@ -90,28 +92,4 @@ def search(terms):
 
 if __name__ == "__main__":
     run()
-
-
-# def intersect(*postings):
-#     if len(postings) <= 1:
-#         return postings[0]
-#     else:
-#         result = []
-#         a = iter(postings[0])
-#         b = iter(postings[1])
-#         if not (a and b):
-#             print("fail")
-#             return []
-#         a1 = a.__next__()
-#         b1 = b.__next__()
-#         while a1 and b1:
-#             if a1 > b1:
-#                 b1 = next(b, None)
-#             elif a1 < b1:
-#                 a1 = next(a, None)
-#             else:
-#                 result.append(a1)
-#                 a1 = next(a, None)
-#                 b1 = next(b, None)
-#         return intersect(*([result] + list(postings[2:])))
 
